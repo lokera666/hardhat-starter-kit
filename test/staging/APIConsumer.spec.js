@@ -1,7 +1,7 @@
 const { network, ethers } = require("hardhat")
 const { networkConfig, developmentChains } = require("../../helper-hardhat-config")
 const { assert } = require("chai")
-const LINK_TOKEN_ABI = require("@chainlink/contracts/abi/v0.4/LinkToken.json")
+const LINK_TOKEN_ABI = require("@chainlink/contracts/abi/v0.8/LinkToken.json")
 
 developmentChains.includes(network.name)
     ? describe.skip
@@ -19,7 +19,7 @@ developmentChains.includes(network.name)
               const oracle = networkConfig[chainId]["oracle"]
               const jobId = ethers.utils.toUtf8Bytes(networkConfig[chainId]["jobId"])
               const fee = networkConfig[chainId]["fee"]
-              const linkTokenAddress = networkConfig[chainId]["linkToken"]
+              const linkTokenAddress = networkConfig[chainId]["mockLinkToken"]
 
               const linkToken = new ethers.Contract(linkTokenAddress, LINK_TOKEN_ABI, deployer)
 
@@ -32,7 +32,7 @@ developmentChains.includes(network.name)
               await linkToken.connect(deployer).transfer(apiConsumer.address, fundAmount)
           })
 
-          it.skip("Our event should successfully fire on callback", async function () {
+          it("Our event should successfully fire on callback", async function () {
               // we setup a promise so we can wait for our callback from the `once` function
               await new Promise(async (resolve, reject) => {
                   // setup listener for our event

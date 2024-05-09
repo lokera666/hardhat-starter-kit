@@ -25,8 +25,8 @@ contract APIConsumer is ChainlinkClient {
      * @param _fee - node operator price per API call / data request
      * @param _link - LINK token address on the corresponding network
      *
-     * Network: Goerli
-     * Oracle: 0xCC79157eb46F5624204f47AB42b3906cAA40eaB7
+     * Network: Sepolia
+     * Oracle: 0x6090149792dAAeE9D1D568c9f9a6F6B46AA29eFD
      * Job ID: ca98366cc7314957b8c012c72f05aeeb
      * Fee: 0.1 LINK
      */
@@ -37,9 +37,9 @@ contract APIConsumer is ChainlinkClient {
         address _link
     ) {
         if (_link == address(0)) {
-            setPublicChainlinkToken();
+            _setPublicChainlinkToken();
         } else {
-            setChainlinkToken(_link);
+            _setChainlinkToken(_link);
         }
         oracle = _oracle;
         jobId = _jobId;
@@ -53,14 +53,14 @@ contract APIConsumer is ChainlinkClient {
      * @return requestId - id of the request
      */
     function requestVolumeData() public returns (bytes32 requestId) {
-        Chainlink.Request memory request = buildChainlinkRequest(
+        Chainlink.Request memory request = _buildChainlinkRequest(
             jobId,
             address(this),
             this.fulfill.selector
         );
 
         // Set the URL to perform the GET request on
-        request.add(
+        request._add(
             "get",
             "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=ETH&tsyms=USD"
         );
@@ -76,14 +76,14 @@ contract APIConsumer is ChainlinkClient {
         //   }
         //  }
         // request.add("path", "RAW.ETH.USD.VOLUME24HOUR"); // Chainlink nodes prior to 1.0.0 support this format
-        request.add("path", "RAW,ETH,USD,VOLUME24HOUR"); // Chainlink nodes 1.0.0 and later support this format
+        request._add("path", "RAW,ETH,USD,VOLUME24HOUR"); // Chainlink nodes 1.0.0 and later support this format
 
         // Multiply the result by 1000000000000000000 to remove decimals
         int256 timesAmount = 10**18;
-        request.addInt("times", timesAmount);
+        request._addInt("times", timesAmount);
 
         // Sends the request
-        return sendChainlinkRequestTo(oracle, request, fee);
+        return _sendChainlinkRequestTo(oracle, request, fee);
     }
 
     /**
@@ -101,7 +101,7 @@ contract APIConsumer is ChainlinkClient {
     }
 
     /**
-     * @notice Witdraws LINK from the contract
+     * @notice Withdraws LINK from the contract
      * @dev Implement a withdraw function to avoid locking your LINK in the contract
      */
     function withdrawLink() external {}

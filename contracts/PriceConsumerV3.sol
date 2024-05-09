@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 
 /**
  * @title The PriceConsumerV3 contract
- * @notice Acontract that returns latest price from Chainlink Price Feeds
+ * @notice A contract that returns latest price from Chainlink Price Feeds
  */
 contract PriceConsumerV3 {
     AggregatorV3Interface internal immutable priceFeed;
@@ -15,9 +15,9 @@ contract PriceConsumerV3 {
      *
      * @param _priceFeed - Price Feed Address
      *
-     * Network: Goerli
+     * Network: Sepolia
      * Aggregator: ETH/USD
-     * Address: 0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e
+     * Address: 0x694AA1769357215DE4FAC081bf1f309aDC325306
      */
     constructor(address _priceFeed) {
         priceFeed = AggregatorV3Interface(_priceFeed);

@@ -2,7 +2,7 @@ const { network, ethers } = require("hardhat")
 const { networkConfig, developmentChains } = require("../../helper-hardhat-config")
 const { assert } = require("chai")
 const VRF_COORDINATOR_ABI = require("@chainlink/contracts/abi/v0.8/VRFCoordinatorV2.json")
-const LINK_TOKEN_ABI = require("@chainlink/contracts/abi/v0.4/LinkToken.json")
+const LINK_TOKEN_ABI = require("@chainlink/contracts/abi/v0.8/LinkToken.json")
 
 developmentChains.includes(network.name)
     ? describe.skip
@@ -49,7 +49,7 @@ developmentChains.includes(network.name)
               await vrfCoordinator.addConsumer(subscriptionId, randomNumberConsumerV2.address)
           })
 
-          it.only("Our event should successfully fire event on callback", async function () {
+          it("Our event should successfully fire event on callback", async function () {
               // we setup a promise so we can wait for our callback from the `once` function
               await new Promise(async (resolve, reject) => {
                   // setup listener for our event
@@ -63,19 +63,22 @@ developmentChains.includes(network.name)
                       try {
                           assert(
                               firstRandomNumber.gt(ethers.constants.Zero),
-                              "First random number is greather than zero"
+                              "First random number is greater than zero"
                           )
                           assert(
                               secondRandomNumber.gt(ethers.constants.Zero),
-                              "Second random number is greather than zero"
+                              "Second random number is greater than zero"
                           )
                           resolve()
                       } catch (e) {
                           reject(e)
                       }
                   })
-
-                  await randomNumberConsumerV2.requestRandomWords()
+                  try {
+                      await randomNumberConsumerV2.requestRandomWords()
+                  } catch (error) {
+                      reject(error)
+                  }
               })
           })
       })

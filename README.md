@@ -8,6 +8,8 @@
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/smartcontractkit/hardhat-starter-kit)
 
+[![GitPOAP Badge](https://public-api.gitpoap.io/v1/repo/smartcontractkit/hardhat-starter-kit/badge)](https://www.gitpoap.io/gp/649)
+
 - [Chainlink Hardhat Starter Kit](#chainlink-hardhat-starter-kit)
 - [Getting Started](#getting-started)
   - [Requirements](#requirements)
@@ -17,7 +19,7 @@
   - [Deploying Contracts](#deploying-contracts)
   - [Run a Local Network](#run-a-local-network)
   - [Using a Testnet or Live Network (like Mainnet or Polygon)](#using-a-testnet-or-live-network-like-mainnet-or-polygon)
-    - [Goerli Ethereum Testnet Setup](#goerli-ethereum-testnet-setup)
+    - [Sepolia Ethereum Testnet Setup](#sepolia-ethereum-testnet-setup)
   - [Forking](#forking)
   - [Auto-Funding](#auto-funding)
 - [Test](#test)
@@ -25,9 +27,8 @@
   - [Chainlink Price Feeds](#chainlink-price-feeds)
   - [Request & Receive Data](#request--receive-data)
   - [VRF Get a random number](#vrf-get-a-random-number)
-  - [Keepers](#keepers)
+  - [Automation](#automation)
   - [Verify on Etherscan](#verify-on-etherscan)
-- [View Contracts Size](#view-contracts-size)
 - [Linting](#linting)
 - [Code Formatting](#code-formatting)
 - [Estimating Gas](#estimating-gas)
@@ -41,8 +42,8 @@
  Implementation of the following 4 Chainlink features using the [Hardhat](https://hardhat.org/) development environment:
  - [Chainlink Price Feeds](https://docs.chain.link/docs/using-chainlink-reference-contracts)
  - [Chainlink VRF](https://docs.chain.link/docs/chainlink-vrf)
- - [Chainlink Keepers](https://docs.chain.link/docs/chainlink-keepers/introduction/)
- - [Request & Receive data](https://docs.chain.link/docs/request-and-receive-data)
+ - [Chainlink Automation](https://docs.chain.link/chainlink-automation/introduction)
+ - [Request & Receive data (AnyAPI)](https://docs.chain.link/any-api/introduction)
 
 # Getting Started 
 
@@ -51,10 +52,10 @@ It's recommended that you've gone through the [hardhat getting started documenta
 ## Requirements
 
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-  - You'll know you did it right if you can run `git --version` and you see a response like `git version x.x.x`
+  - You'll know you did it right if you can run `git --version` and see a response like `git version x.x.x`
 - [Nodejs](https://nodejs.org/en/)
   - You'll know you've installed nodejs right if you can run:
-    - `node --version`and get an output like: `vx.x.x`
+    - `node --version` and get an output like: `vx.x.x`
 - [Yarn](https://classic.yarnpkg.com/lang/en/docs/install/) instead of `npm`
   - You'll know you've installed yarn right if you can run:
     - `yarn --version` And get an output like: `x.x.x`
@@ -128,7 +129,7 @@ This will deploy your contracts to a local network. Additionally, if on a local 
 
 ## Run a Local Network
 
-One of the best ways to test and interact with smart contracts is with a local network. To run a local network with all your contracts in it, run the following:
+One of the best ways to test and interact with smart contracts is by using a local network. To run a local network with all your contracts in it, execute the following command:
 
 ```
 npx hardhat node
@@ -154,15 +155,15 @@ To interact with a live or test network, you'll need:
 2. A Private Key
 3. ETH & LINK token (either testnet or real)
 
-Let's look at an example of setting these up using the Goerli testnet. 
+Let's look at an example of setting these up using the Sepolia testnet. 
 
-### Goerli Ethereum Testnet Setup
+### Sepolia Ethereum Testnet Setup
 
 First, we will need to set environment variables. We can do so by setting them in our `.env` file (create it if it's not there). You can also read more about [environment variables](https://www.twilio.com/blog/2017/01/how-to-set-environment-variables.html) from the linked twilio blog. You'll find a sample of what this file will look like in `.env.example`
 
 > IMPORTANT: MAKE SURE YOU'D DON'T EXPOSE THE KEYS YOU PUT IN THIS `.env` FILE. By that, I mean don't push them to a public repo, and please try to keep them keys you use in development not associated with any real funds. 
 
-1. Set your `GOERLI_RPC_URL` [environment variable.](https://www.twilio.com/blog/2017/01/how-to-set-environment-variables.html)
+1. Set your `SEPOLIA_RPC_URL` [environment variable.](https://www.twilio.com/blog/2017/01/how-to-set-environment-variables.html)
 
 You can get one for free from [Alchemy](https://www.alchemy.com/), [Infura](https://infura.io/), or [Moralis](https://moralis.io/speedy-nodes/). This is your connection to the blockchain. 
 
@@ -178,12 +179,12 @@ Don't commit and push any changes to .env files that may contain sensitive infor
 
 `.env` example:
 ```
-GOERLI_RPC_URL='www.infura.io/asdfadsfafdadf'
+SEPOLIA_RPC_URL='https://sepolia.infura.io/v3/asdfadsfafdadf'
 PRIVATE_KEY='abcdef'
 ```
-`bash` example
+`bash` example:
 ```
-export GOERLI_RPC_URL='www.infura.io/asdfadsfafdadf'
+export SEPOLIA_RPC_URL='https://sepolia.infura.io/v3/asdfadsfafdadf'
 export PRIVATE_KEY='abcdef'
 ```
 
@@ -191,22 +192,22 @@ export PRIVATE_KEY='abcdef'
 
 For other networks like mainnet and polygon, you can use different environment variables for your RPC URL and your private key. See the `hardhat.config.js` to learn more. 
 
-3. Get some Goerli Testnet ETH and LINK 
+3. Get some Sepolia Testnet ETH and LINK 
 
 Head over to the [Chainlink faucets](https://faucets.chain.link/) and get some ETH and LINK. Please follow [the chainlink documentation](https://docs.chain.link/docs/acquire-link/) if unfamiliar. 
 
 4. Create VRF V2 subscription
 
-Head over to [VRF Subscription Page](https://vrf.chain.link/goerli) and create the new subscription. Save your subscription ID and put it in `helper-hardhat-config.js` file as `subscriptionId`
+Head over to [VRF Subscription Page](https://vrf.chain.link/sepolia) and create the new subscription. Save your subscription ID and put it in `helper-hardhat-config.js` file as `subscriptionId`
 
 5. Running commands
 
-You should now be all setup! You can run any command and just pass the `--network goerli` now!
+You should now be all setup! You can run any command and just pass the `--network sepolia` now!
 
 To deploy contracts:
 
 ```
-npm run deploy --network goerli
+npm run deploy --network sepolia
 ```
 
 To run staging testnet tests
@@ -216,7 +217,8 @@ npm run test-staging
 
 ## Forking 
  
-If you'd like to run tests or on a network that is a [forked network](https://hardhat.org/hardhat-network/guides/mainnet-forking.html)
+If you would like to run tests on a [forked network](https://hardhat.org/hardhat-network/guides/mainnet-forking.html), follow these steps: 
+
 1. Set a `MAINNET_RPC_URL` environment variable that connects to the mainnet.
 2. Choose a block number to select a state of the network you are forking and set it as `FORKING_BLOCK_NUMBER` environment variable. If ignored, it will use the latest block each time which can lead to test inconsistency.
 3. Set `enabled` flag to `true`/`false` to enable/disable forking feature
@@ -261,10 +263,10 @@ or
 yarn test
 ```
 
-To run staging tests on Goerli network:
+To run staging tests on Sepolia network:
 
 ```
-npx hardhat test --network goerli
+npx hardhat test --network sepolia
 ```
 or
 ```bash
@@ -316,12 +318,20 @@ npx hardhat read-data --contract insert-contract-address-here --network network
 
 
 ## VRF Get a random number
-The VRFConsumer contract has two tasks, one to request a random number, and one to read the result of the random number request. To start, go to [VRF Subscription Page](https://vrf.chain.link/goerli) and create the new subscription. Save your subscription ID and put it in `helper-hardhat-config.js` file as `subscriptionId`:
+The VRFConsumer contract has two tasks, one to request a random number, and one to read the result of the random number request. 
+As explained in the [developer documentation](https://docs.chain.link/vrf/v2/introduction), there are two methods:
+- The [Subscription method](https://docs.chain.link/vrf/v2/subscription)
+- The [Direct Funding method](https://docs.chain.link/vrf/v2/direct-funding)
+
+Read the docs first to understand which method is the most suitable for your use case.
+
+### VRF Subscription method
+To start, go to [VRF Subscription Page](https://vrf.chain.link/sepolia) and create the new subscription. Save your subscription ID and put it in `helper-hardhat-config.js` file as `subscriptionId`:
 
 ```javascript
 5: {
     // rest of the config
-    subscriptionId = "777"
+    subscriptionId: "777"
 }
 ```
 
@@ -343,6 +353,37 @@ Once you have successfully made a request for a random number, you can see the r
 npx hardhat read-random-number --contract insert-contract-address-here --network network
 ```
 
+### VRF Direct Funding method
+Deploy your VRF V2 contract consumer to the network.
+
+```bash
+npm run deploy --network network   
+```
+
+or (if you are using yarn)
+
+```bash
+yarn deploy --network network   
+```
+
+Now you have to fund your consumer contract with LINK tokens:
+
+```bash
+npx hardhat transfer-link --recipient insert-contract-address-here --amount insert-amount-in-juels-here --network network
+```
+
+Once that's done, you can perform a VRF request with the request-random-number task:
+
+```bash
+npx hardhat request-random-number-direct-funding --callbackgaslimit insert-callback-gas-limit-here --requestconfirmations insert-request-confirmations-here --numwords insert-number-words-here --contract insert-contract-address-here --network network
+```
+
+Once you have successfully made a request for a random number, you can see the result via the read-random-number task:
+
+```bash
+npx hardhat read-random-number-direct-funding --contract insert-contract-address-here --network network
+```
+
 ## Automation
 The AutomationCounter contract is a simple Chainlink Automation enabled contract that simply maintains a counter variable that gets incremented each time the performUpkeep task is performed by a Chainlink Automation. Once the contract is deployed, you should head to [https://automation.chain.link/](https://automation.chain.link/) to register it for upkeeps, then you can use the task below to view the counter variable that gets incremented by Chainlink Automation
 
@@ -361,7 +402,7 @@ npx hardhat verify --network <NETWORK> <CONTRACT_ADDRESS> <CONSTRUCTOR_PARAMETER
 example:
 
 ```
-npx hardhat verify --network goerli 0x9279791897f112a41FfDa267ff7DbBC46b96c296 "0x9326BFA02ADD2366b30bacB125260Af641031331"
+npx hardhat verify --network sepolia 0x9279791897f112a41FfDa267ff7DbBC46b96c296 "0x694AA1769357215DE4FAC081bf1f309aDC325306"
 ```
 
 # Linting
